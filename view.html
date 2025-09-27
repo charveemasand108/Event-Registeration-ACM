@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Registrations</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #fff;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #ccc;
+            font-size: 1.1em;
+        }
+        
+        .back-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: rgba(255, 192, 203, 0.3);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 25px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 192, 203, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .registrations-container {
+            background: rgba(255, 192, 203, 0.1);
+            border: 2px solid rgba(255, 192, 203, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(15px);
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .stat-item {
+            color: #fff;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #ffc0cb;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            color: #ccc;
+        }
+        
+        .registration-item {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+        
+        .registration-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .registration-email {
+            font-weight: bold;
+            color: #ffc0cb;
+        }
+        
+        .registration-id {
+            font-size: 0.8em;
+            color: #ccc;
+        }
+        
+        .registration-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9em;
+            color: #ccc;
+        }
+        
+        .remember-badge {
+            background: rgba(255, 192, 203, 0.3);
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+        }
+        
+        .loading {
+            text-align: center;
+            color: #fff;
+            font-size: 1.2em;
+            padding: 40px;
+        }
+        
+        .error {
+            text-align: center;
+            color: #ff6b6b;
+            font-size: 1.1em;
+            padding: 20px;
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            border-radius: 10px;
+        }
+        
+        .empty {
+            text-align: center;
+            color: #ccc;
+            font-size: 1.1em;
+            padding: 40px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .stats {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .registration-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+            
+            .registration-details {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-btn">← Back to Registration</a>
+        
+        <div class="header">
+            <h1>User Registrations</h1>
+            <p>View all registered users</p>
+        </div>
+        
+        <div class="registrations-container">
+            <div id="stats" class="stats" style="display: none;">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalCount">0</div>
+                    <div class="stat-label">Total Users</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="rememberCount">0</div>
+                    <div class="stat-label">Remember Me</div>
+                </div>
+            </div>
+            
+            <div id="content">
+                <div class="loading">Loading registrations...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function loadRegistrations() {
+            try {
+                const response = await fetch('/registrations');
+                const result = await response.json();
+                
+                if (result.success) {
+                    displayRegistrations(result.data);
+                    updateStats(result.data);
+                } else {
+                    showError('Failed to load registrations');
+                }
+            } catch (error) {
+                showError('Network error. Please try again.');
+            }
+        }
+        
+        function displayRegistrations(registrations) {
+            const contentDiv = document.getElementById('content');
+            
+            if (registrations.length === 0) {
+                contentDiv.innerHTML = '<div class="empty">No registrations found.</div>';
+                return;
+            }
+            
+            const html = registrations.map(reg => `
+                <div class="registration-item">
+                    <div class="registration-header">
+                        <div class="registration-email">${reg.email}</div>
+                        <div class="registration-id">ID: ${reg.id}</div>
+                    </div>
+                    <div class="registration-details">
+                        <div>Registered: ${new Date(reg.timestamp).toLocaleString()}</div>
+                        <div>
+                            ${reg.remember ? '<span class="remember-badge">Remember Me</span>' : 'No remember'}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            contentDiv.innerHTML = html;
+        }
+        
+        function updateStats(registrations) {
+            const totalCount = registrations.length;
+            const rememberCount = registrations.filter(reg => reg.remember).length;
+            
+            document.getElementById('totalCount').textContent = totalCount;
+            document.getElementById('rememberCount').textContent = rememberCount;
+            document.getElementById('stats').style.display = 'flex';
+        }
+        
+        function showError(message) {
+            document.getElementById('content').innerHTML = `<div class="error">${message}</div>`;
+        }
+        
+        // Load registrations when page loads
+        document.addEventListener('DOMContentLoaded', loadRegistrations);
+    </script>
+</body>
+</html>
