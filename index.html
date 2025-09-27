@@ -48,6 +48,7 @@
     <script>
         document.getElementById('registrationForm').addEventListener('submit', async function(e) {
             e.preventDefault();
+            console.log('Form submitted!'); // Debug log
             
             const formData = new FormData(this);
             const data = {
@@ -55,6 +56,8 @@
                 password: formData.get('password'),
                 remember: formData.get('remember') === 'on'
             };
+            
+            console.log('Form data:', data); // Debug log
             
             const messageDiv = document.getElementById('message');
             const submitBtn = document.querySelector('button[type="submit"]');
@@ -64,6 +67,7 @@
             submitBtn.disabled = true;
             
             try {
+                console.log('Sending request to backend...'); // Debug log
                 const response = await fetch('/register', {
                     method: 'POST',
                     headers: {
@@ -72,7 +76,9 @@
                     body: JSON.stringify(data)
                 });
                 
+                console.log('Response status:', response.status); // Debug log
                 const result = await response.json();
+                console.log('Response result:', result); // Debug log
                 
                 if (result.success) {
                     messageDiv.textContent = result.message;
