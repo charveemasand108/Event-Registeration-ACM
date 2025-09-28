@@ -40,15 +40,14 @@ npm run dev
 
 ### 3. Access the Application
 
-After starting the server, you can access the application at:
+After starting the server, you can access the application:
 
 **On your computer:**
-- **Registration Form**: http://localhost:3000
-- **View Registrations**: http://localhost:3000/view
+- Open browser and go to: `http://localhost:3000`
 
 **From other devices on the same network:**
-- **Registration Form**: http://[YOUR_IP_ADDRESS]:3000
-- **View Registrations**: http://[YOUR_IP_ADDRESS]:3000/view
+- Find your IP address first (see instructions below)
+- Use: `http://[YOUR_IP_ADDRESS]:3000`
 
 **To find your IP address:**
 ```bash
@@ -60,6 +59,8 @@ ipconfig
 ```
 
 **Example**: If your IP is `192.168.1.100`, use `http://192.168.1.100:3000`
+
+**Note**: Replace `[YOUR_IP_ADDRESS]` with your actual local IP address
 
 ## 🌐 Making It Publicly Accessible
 
@@ -102,9 +103,8 @@ git push heroku main
 Register a new user
 ```json
 {
-  "email": "user@example.com",
-  "password": "password123",
-  "remember": true
+  "name": "John Doe",
+  "email": "john@example.com"
 }
 ```
 
@@ -123,15 +123,16 @@ Get all registered users (passwords are excluded for security)
 ```
 
 ## Validation Rules
+- **Name**: Must be at least 2 characters long
 - **Email**: Must be a valid email format
-- **Password**: Minimum 6 characters
-- **Remember Me**: Optional boolean checkbox
 - **Duplicate Emails**: Prevented on backend
+- **Required Fields**: Both name and email are required
 
 ## Security Notes
-- Passwords are stored in plain text (for demo purposes)
-- In production, use bcrypt or similar for password hashing
+- Data is stored in JSON file (for demo purposes)
+- In production, use a proper database (MongoDB, PostgreSQL, etc.)
 - Consider adding rate limiting and CSRF protection
+- Email addresses are validated and duplicates are prevented
 
 ## Technologies Used
 - **Frontend**: HTML5, CSS3, JavaScript (Vanilla)
