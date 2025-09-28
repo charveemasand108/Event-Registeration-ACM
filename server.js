@@ -123,8 +123,9 @@ app.get('/view', (req, res) => {
 });
 
 // Start server
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on http://localhost:${PORT}`);
-    console.log(`Registration endpoint: POST http://localhost:${PORT}/register`);
-    console.log(`View registrations: http://localhost:${PORT}/view`);
+    console.log(`Server accessible from network: http://10.3.35.86:${PORT}`);
+    console.log(`Registration endpoint: POST http://10.3.35.86:${PORT}/register`);
+    console.log(`View registrations: http://10.3.35.86:${PORT}/view`);
 });
