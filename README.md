@@ -40,15 +40,48 @@ npm run dev
 
 ### 3. Access the Application
 
-**Local Access:**
+After starting the server, you can access the application at:
+
+**On your computer:**
 - **Registration Form**: http://localhost:3000
 - **View Registrations**: http://localhost:3000/view
 
-**Network Access (from other devices on same WiFi):**
-- **Registration Form**: http://10.3.35.86:3000
-- **View Registrations**: http://10.3.35.86:3000/view
+**From other devices on the same network:**
+- **Registration Form**: http://[YOUR_IP_ADDRESS]:3000
+- **View Registrations**: http://[YOUR_IP_ADDRESS]:3000/view
 
-**Note**: Replace `10.3.35.86` with your actual local IP address (run `ifconfig` to find it)
+**To find your IP address:**
+```bash
+# On Mac/Linux
+ifconfig | grep "inet " | grep -v 127.0.0.1
+
+# On Windows
+ipconfig
+```
+
+**Example**: If your IP is `192.168.1.100`, use `http://192.168.1.100:3000`
+
+## 🌐 Making It Publicly Accessible
+
+To make your registration form accessible from anywhere on the internet, you can deploy it to a free hosting service:
+
+### Option 1: Vercel (Recommended)
+```bash
+npm i -g vercel
+vercel --prod
+```
+
+### Option 2: Netlify
+1. Go to [netlify.com](https://netlify.com)
+2. Drag and drop your project folder
+3. Get a public URL instantly
+
+### Option 3: Heroku
+```bash
+# Install Heroku CLI, then:
+heroku create your-app-name
+git push heroku main
+```
 
 ## 📦 Installation
 
