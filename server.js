@@ -122,6 +122,11 @@ app.get('/view', (req, res) => {
     res.sendFile(path.join(__dirname, 'view.html'));
 });
 
+// Serve the network test page
+app.get('/test', (req, res) => {
+    res.sendFile(path.join(__dirname, 'network-test.html'));
+});
+
 // Start server
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on http://localhost:${PORT}`);
