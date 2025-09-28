@@ -10,6 +10,7 @@ const PORT = 3000;
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static('.')); // Serve static files from current directory
 
 // Data file path
@@ -22,17 +23,14 @@ if (!fs.existsSync(DATA_FILE)) {
 
 // Validation rules
 const registrationValidation = [
+    body('name')
+        .trim()
+        .isLength({ min: 2 })
+        .withMessage('Name must be at least 2 characters long'),
     body('email')
         .isEmail()
         .normalizeEmail()
-        .withMessage('Please provide a valid email address'),
-    body('password')
-        .isLength({ min: 6 })
-        .withMessage('Password must be at least 6 characters long'),
-    body('remember')
-        .optional()
-        .isBoolean()
-        .withMessage('Remember me must be a boolean value')
+        .withMessage('Please provide a valid email address')
 ];
 
 // Registration endpoint
@@ -48,7 +46,7 @@ app.post('/register', registrationValidation, (req, res) => {
             });
         }
 
-        const { email, password, remember } = req.body;
+        const { name, email } = req.body;
 
         // Check if email already exists
         const registrations = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
@@ -64,9 +62,8 @@ app.post('/register', registrationValidation, (req, res) => {
         // Create new registration entry
         const newRegistration = {
             id: Date.now().toString(),
+            name: name,
             email: email,
-            password: password, // In production, hash this password!
-            remember: remember || false,
             timestamp: new Date().toISOString()
         };
 
@@ -76,16 +73,17 @@ app.post('/register', registrationValidation, (req, res) => {
 
         // Log to console
         console.log('New registration:', {
+            name: newRegistration.name,
             email: newRegistration.email,
-            remember: newRegistration.remember,
             timestamp: newRegistration.timestamp
         });
 
         res.json({
             success: true,
-            message: 'Registration successful!',
+            message: `Thanks ${name}, you are registered successfully!`,
             data: {
                 id: newRegistration.id,
+                name: newRegistration.name,
                 email: newRegistration.email,
                 timestamp: newRegistration.timestamp
             }
@@ -105,18 +103,10 @@ app.get('/registrations', (req, res) => {
     try {
         const registrations = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
         
-        // Remove passwords from response for security
-        const safeRegistrations = registrations.map(reg => ({
-            id: reg.id,
-            email: reg.email,
-            remember: reg.remember,
-            timestamp: reg.timestamp
-        }));
-
         res.json({
             success: true,
-            data: safeRegistrations,
-            count: safeRegistrations.length
+            data: registrations,
+            count: registrations.length
         });
     } catch (error) {
         console.error('Error fetching registrations:', error);
