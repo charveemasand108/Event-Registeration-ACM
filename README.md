@@ -39,8 +39,16 @@ npm run dev
 ```
 
 ### 3. Access the Application
+
+**Local Access:**
 - **Registration Form**: http://localhost:3000
 - **View Registrations**: http://localhost:3000/view
+
+**Network Access (from other devices on same WiFi):**
+- **Registration Form**: http://10.3.35.86:3000
+- **View Registrations**: http://10.3.35.86:3000/view
+
+**Note**: Replace `10.3.35.86` with your actual local IP address (run `ifconfig` to find it)
 
 ## 📦 Installation
 
